@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:en_garde_flutter/views/Dashboard.dart';
+import 'package:en_garde_flutter/views/Profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
             index: _selectedIndex,
             children: [
               Dashboard(),
-              Text('Page 2'),
+              Profile(),
               Text('Page 3'),
             ],
           )),
