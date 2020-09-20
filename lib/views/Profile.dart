@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [EditProfile()],
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        children: [EditProfile()],
+      ),
     );
   }
 }

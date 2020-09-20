@@ -4,8 +4,11 @@ import 'package:en_garde_flutter/widgets/Availability.dart';
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [AvailabilityWidget()],
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: [AvailabilityWidget()],
+        )
     );
   }
 }
