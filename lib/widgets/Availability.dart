@@ -1,4 +1,6 @@
+import 'package:en_garde_flutter/models/EnGardeModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AvailabilityWidget extends StatefulWidget {
   @override
@@ -6,8 +8,6 @@ class AvailabilityWidget extends StatefulWidget {
 }
 
 class _AvailabilityState extends State<AvailabilityWidget> {
-  bool _availabilityStatus = false;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -19,16 +19,24 @@ class _AvailabilityState extends State<AvailabilityWidget> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          const ListTile(
-            title: Text('You are not on-duty'),
-          ),
-          SwitchListTile(
-            title: const Text('Availability'),
-            value: _availabilityStatus,
-            onChanged: _onAvailabilityChanged,
-          ),
+          Consumer<EnGardeModel>(builder: (context, enGarde, child) {
+            return ListTile(
+              title: Text(enGarde.onDuty
+                  ? 'You are on-duty'
+                  : 'You are not on-duty'),
+            );
+          }),
+          Consumer<EnGardeModel>(builder: (context, enGarde, child) {
+            return SwitchListTile(
+              title: const Text('Availability'),
+              value: enGarde.availability,
+              onChanged: enGarde.onDuty ? (bool value) {
+                enGarde.changeAvailability(value);
+              } : null,
+            );
+          }),
           ExpansionTile(
-            title: Text('Hint'),
+            title: const Text('Hint'),
             children: [
               Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -41,11 +49,5 @@ class _AvailabilityState extends State<AvailabilityWidget> {
         ],
       ),
     );
-  }
-
-  _onAvailabilityChanged(bool value) {
-    setState(() {
-      _availabilityStatus = value;
-    });
   }
 }

@@ -1,12 +1,19 @@
+import 'package:en_garde_flutter/models/EnGardeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:en_garde_flutter/views/Dashboard.dart';
 import 'package:en_garde_flutter/views/Profile.dart';
 import 'package:en_garde_flutter/views/Notifications.dart';
+import 'package:provider/provider.dart';
 
 import 'icons/en_garde_flutter_icons.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => EnGardeModel()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
