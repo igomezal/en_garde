@@ -1,4 +1,6 @@
+import 'package:en_garde/models/DatabaseService.dart';
 import 'package:en_garde/models/EnGardeModel.dart';
+import 'package:en_garde/models/UserFromFireStore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,12 +23,12 @@ class AvailabilityWidget extends StatelessWidget {
                   : 'You are not on-duty'),
             );
           }),
-          Consumer<EnGardeModel>(builder: (context, enGarde, child) {
+          Consumer2<UserFromFireStore, EnGardeModel>(builder: (context, user, enGarde, child) {
             return SwitchListTile(
               title: const Text('Availability'),
-              value: enGarde.availability,
-              onChanged: enGarde.onDuty ? (bool value) {
-                enGarde.changeAvailability(value);
+              value: user?.availability ?? false,
+              onChanged: enGarde.onDuty ? (bool availability) {
+                Provider.of<DatabaseService>(context, listen: false).changeAvailability(user.id, availability);
               } : null,
             );
           }),

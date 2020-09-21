@@ -11,6 +11,12 @@
       "css": "mail-read",
       "code": 62230,
       "src": "octicons"
+    },
+    {
+      "uid": "fe117d6ac5580ba799b2301053a8581d",
+      "css": "google",
+      "code": 61856,
+      "src": "fontawesome5"
     }
   ]
 }

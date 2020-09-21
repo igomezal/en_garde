@@ -25,5 +25,6 @@ class EnGarde {
   static const _kFontFam = 'EnGarde';
   static const _kFontPkg = null;
 
+  static const IconData google = IconData(0xf1a0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData mail_read = IconData(0xf316, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
