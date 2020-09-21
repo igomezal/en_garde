@@ -1,4 +1,4 @@
-name: en_garde_flutter
+name: en_garde
 description: En Garde Application using flutter
 
 # The following line prevents the package from being accidentally published to
@@ -49,7 +49,7 @@ flutter:
   fonts:
     - family:  EnGardeFlutter
       fonts:
-        - asset: fonts/EnGardeFlutter.ttf
+        - asset: fonts/EnGarde.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

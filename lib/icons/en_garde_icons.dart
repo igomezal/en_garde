@@ -9,7 +9,7 @@
 ///   fonts:
 ///    - family:  EnGardeFlutter
 ///      fonts:
-///       - asset: fonts/EnGardeFlutter.ttf
+///       - asset: fonts/EnGarde.ttf
 ///
 /// 
 /// * Octicons, Copyright (C) 2020 by GitHub Inc.
@@ -19,10 +19,10 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class EnGardeFlutter {
-  EnGardeFlutter._();
+class EnGarde {
+  EnGarde._();
 
-  static const _kFontFam = 'EnGardeFlutter';
+  static const _kFontFam = 'EnGarde';
   static const _kFontPkg = null;
 
   static const IconData mail_read = IconData(0xf316, fontFamily: _kFontFam, fontPackage: _kFontPkg);

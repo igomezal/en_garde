@@ -1,4 +1,4 @@
-import 'package:en_garde_flutter/models/EnGardeModel.dart';
+import 'package:en_garde/models/EnGardeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

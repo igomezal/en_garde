@@ -1,11 +1,11 @@
-import 'package:en_garde_flutter/models/EnGardeModel.dart';
+import 'package:en_garde/models/EnGardeModel.dart';
 import 'package:flutter/material.dart';
-import 'package:en_garde_flutter/views/Dashboard.dart';
-import 'package:en_garde_flutter/views/Profile.dart';
-import 'package:en_garde_flutter/views/Notifications.dart';
+import 'package:en_garde/views/Dashboard.dart';
+import 'package:en_garde/views/Profile.dart';
+import 'package:en_garde/views/Notifications.dart';
 import 'package:provider/provider.dart';
 
-import 'icons/en_garde_flutter_icons.dart';
+import 'icons/en_garde_icons.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int _notificationIndex = 2;
   List<Widget> _notificationActions = [
     IconButton(
-      icon: Icon(EnGardeFlutter.mail_read),
+      icon: Icon(EnGarde.mail_read),
       tooltip: 'Mark all notifications as read',
       onPressed: () {},
     ),

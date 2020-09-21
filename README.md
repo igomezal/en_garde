@@ -1,4 +1,4 @@
-# en_garde_flutter
+# en_garde
 
 En Garde Application using flutter
 
