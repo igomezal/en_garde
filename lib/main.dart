@@ -73,13 +73,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: _actions,
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          Dashboard(),
-          Profile(),
-          Notifications(),
-        ],
+      body: SafeArea(
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            Dashboard(),
+            Profile(),
+            Notifications(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [

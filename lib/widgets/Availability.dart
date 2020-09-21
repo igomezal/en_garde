@@ -2,12 +2,7 @@ import 'package:en_garde/models/EnGardeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AvailabilityWidget extends StatefulWidget {
-  @override
-  _AvailabilityState createState() => _AvailabilityState();
-}
-
-class _AvailabilityState extends State<AvailabilityWidget> {
+class AvailabilityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -47,7 +47,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   fonts:
-    - family:  EnGardeFlutter
+    - family:  EnGarde
       fonts:
         - asset: fonts/EnGarde.ttf
 
