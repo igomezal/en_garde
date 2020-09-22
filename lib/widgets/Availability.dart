@@ -18,18 +18,21 @@ class AvailabilityWidget extends StatelessWidget {
           ),
           Consumer<EnGardeModel>(builder: (context, enGarde, child) {
             return ListTile(
-              title: Text(enGarde.onDuty
-                  ? 'You are on-duty'
-                  : 'You are not on-duty'),
+              title: Text(
+                  enGarde.onDuty ? 'You are on-duty' : 'You are not on-duty'),
             );
           }),
-          Consumer2<UserFromFireStore, EnGardeModel>(builder: (context, user, enGarde, child) {
+          Consumer2<UserFromFireStore, EnGardeModel>(
+              builder: (context, user, enGarde, child) {
             return SwitchListTile(
               title: const Text('Availability'),
               value: user?.availability ?? false,
-              onChanged: enGarde.onDuty ? (bool availability) {
-                Provider.of<DatabaseService>(context, listen: false).changeAvailability(user.id, availability);
-              } : null,
+              onChanged: enGarde.onDuty
+                  ? (bool availability) {
+                      Provider.of<DatabaseService>(context, listen: false)
+                          .changeAvailability(user.id, availability);
+                    }
+                  : null,
             );
           }),
           ExpansionTile(
