@@ -56,7 +56,6 @@ class _EditProfile extends State<EditProfile> {
                   builder: (context, child) {
                     return Consumer<Map<String, dynamic>>(
                         builder: (context, phone, child) {
-                          print(phone);
                       return IntlPhoneField(
                         initialValue: phone != null ? phone['national_number'] : '',
                         decoration: InputDecoration(
