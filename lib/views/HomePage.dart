@@ -50,6 +50,12 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _actions = [];
   User _authenticated = FirebaseAuth.instance.currentUser;
 
+  List<Widget> _pages = [
+    Dashboard(),
+    Profile(),
+    Notifications(),
+  ];
+
   @override
   void initState() {
     applicationOpened();
@@ -88,13 +94,8 @@ class _HomePageState extends State<HomePage> {
         child: _authenticated != null
             ? StreamProvider<UserFromFireStore>(
                 create: (_) => Provider.of<DatabaseService>(context, listen: false).streamUser(_authenticated.uid),
-                child: IndexedStack(
-                  index: _selectedIndex,
-                  children: [
-                    Dashboard(),
-                    Profile(),
-                    Notifications(),
-                  ],
+                child: Container(
+                  child: _pages[_selectedIndex],
                 ),
               )
             : AuthPage(),
