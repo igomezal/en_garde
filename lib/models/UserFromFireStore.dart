@@ -10,7 +10,7 @@ class UserFromFireStore {
   String telephone;
   bool availability;
 
-  UserFromFireStore({ this.notificationToken, this.telephone, this.availability });
+  UserFromFireStore({ this.notificationToken, this.telephone = '', this.availability});
 
   factory UserFromFireStore.fromJson(Map<String, dynamic> json) => _$UserFromFireStoreFromJson(json);
 

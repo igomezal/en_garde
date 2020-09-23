@@ -14,12 +14,12 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfile extends State<EditProfile> {
   bool _notValid = false;
-  Map<String, int> _allSupportedRegions;
+  String _telephone = '';
 
-  _changeNotValid(bool notValid) {
-    setState(() {
-      _notValid = notValid;
-    });
+  @override
+  initState() {
+    super.initState();
+    _telephone = Provider.of<UserFromFireStore>(context, listen: false).telephone;
   }
 
   @override
@@ -29,7 +29,7 @@ class _EditProfile extends State<EditProfile> {
       builder: (context, regionMapNumbers) {
         return Consumer2<User, UserFromFireStore>(
             builder: (context, user, userFromFireStore, child) {
-          return Card(
+              return Card(
             child: Column(children: [
               const ListTile(
                 title: Text(
@@ -56,8 +56,9 @@ class _EditProfile extends State<EditProfile> {
                   builder: (context, child) {
                     return Consumer<Map<String, dynamic>>(
                         builder: (context, phone, child) {
+                          print(phone);
                       return IntlPhoneField(
-                        initialValue: phone['national_number'],
+                        initialValue: phone != null ? phone['national_number'] : '',
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Telephone',
@@ -66,7 +67,7 @@ class _EditProfile extends State<EditProfile> {
                               : null,
                         ),
                         onChanged: (telephone) async {
-                          _notValid = true;
+                          _telephone = telephone.completeNumber;
                           try {
                             await PhoneNumber().parse(telephone.completeNumber);
                             _changeNotValid(false);
@@ -74,10 +75,12 @@ class _EditProfile extends State<EditProfile> {
                             _changeNotValid(true);
                             print(e);
                           }
-                          print(telephone.completeNumber);
+                        },
+                        onSubmitted: (_) {
+                          _submitTelephone(user.uid, _telephone);
                         },
                         initialCountryCode: getRegionCode(
-                            regionMapNumbers.data, phone['country_code']),
+                            regionMapNumbers.data, phone != null ? phone['country_code'] : '34'),
                       );
                     });
                   },
@@ -85,17 +88,13 @@ class _EditProfile extends State<EditProfile> {
               ),
               ButtonBar(
                 children: [
-                  OutlineButton(
-                    color: Colors.black,
-                    textColor: Colors.black,
-                    child: const Text('RESET'),
-                    onPressed: () {},
-                  ),
                   RaisedButton(
                     color: Colors.blue,
                     textColor: Colors.white,
                     child: const Text('SUBMIT'),
-                    onPressed: () {},
+                    onPressed: () {
+                      _submitTelephone(user.uid, _telephone);
+                    },
                   )
                 ],
               )
@@ -110,5 +109,21 @@ class _EditProfile extends State<EditProfile> {
     return regionMapNumbers.keys.firstWhere(
         (k) => regionMapNumbers[k].toString() == regionNumber,
         orElse: () => null);
+  }
+
+  void _changeNotValid(bool notValid) {
+    setState(() {
+      _notValid = notValid;
+    });
+  }
+
+  void _submitTelephone(String userId, String telephone) {
+    if(!_notValid) {
+      Provider.of<DatabaseService>(context, listen: false).changeTelephone(userId, telephone);
+      FocusScope.of(context).unfocus();
+
+      final snackBar = SnackBar(content: Text('Telephone updated correctly!'));
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 }

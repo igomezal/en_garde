@@ -17,6 +17,10 @@ class DatabaseService {
     _db.doc('users/$id').update({'availability': availability});
   }
 
+  void changeTelephone(String id, String telephone) {
+    _db.doc('users/$id').update({'telephone': telephone});
+  }
+
   factory DatabaseService() {
     return _service;
   }
