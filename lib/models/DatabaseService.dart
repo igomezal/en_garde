@@ -18,7 +18,7 @@ class DatabaseService {
     return _db.collection('dutyDays').snapshots().map((collection) {
       Map<String, List<String>> myMap = Map<String, List<String>>();
       collection.docs.forEach((element) {
-        myMap.putIfAbsent(element.id, () => convertTest(element.data()['users']));
+        myMap.putIfAbsent(element.id, () => convertTest(element.data()['users'] ?? []));
       });
       return myMap;
     });
