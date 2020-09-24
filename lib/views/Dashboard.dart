@@ -1,4 +1,3 @@
-import 'package:en_garde/models/DatabaseService.dart';
 import 'package:flutter/material.dart';
 import 'package:en_garde/widgets/Availability.dart';
 

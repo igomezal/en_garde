@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:en_garde/models/DatabaseService.dart';
 import 'package:en_garde/models/UserFromFireStore.dart';
+import 'package:en_garde/widgets/TelephoneAlert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -94,8 +95,12 @@ class _HomePageState extends State<HomePage> {
         child: _authenticated != null
             ? StreamProvider<UserFromFireStore>(
                 create: (_) => Provider.of<DatabaseService>(context, listen: false).streamUser(_authenticated.uid),
-                child: Container(
-                  child: _pages[_selectedIndex],
+                child: Consumer<UserFromFireStore>(
+                  builder: (context, user, child) {
+                    return Column(
+                      children: [if(user?.telephone?.isEmpty ?? false) TelephoneAlert(), _pages[_selectedIndex]],
+                    );
+                  },
                 ),
               )
             : AuthPage(),

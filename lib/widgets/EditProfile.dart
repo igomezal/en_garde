@@ -92,18 +92,20 @@ class _EditProfile extends State<EditProfile> {
               },
             ),
           ),
-          ButtonBar(
-            children: [
-              RaisedButton(
-                color: Colors.blue,
-                textColor: Colors.white,
-                child: const Text('SUBMIT'),
-                onPressed: () {
-                  _submitTelephone(user.uid, _telephone);
-                },
-              )
-            ],
-          )
+          userFromFireStore?.telephone != null
+              ? ButtonBar(
+                  children: [
+                    RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      child: const Text('SUBMIT'),
+                      onPressed: () {
+                        _submitTelephone(user.uid, _telephone);
+                      },
+                    )
+                  ],
+                )
+              : Container(),
         ]),
       );
     });
@@ -121,7 +123,15 @@ class _EditProfile extends State<EditProfile> {
     });
   }
 
-  void _submitTelephone(String userId, String telephone) {
+  void _submitTelephone(String userId, String telephone) async {
+    try {
+      await PhoneNumber().parse(telephone);
+      _changeNotValid(false);
+    } on PlatformException catch (e) {
+      _changeNotValid(true);
+      print(e);
+    }
+
     if (!_notValid) {
       Provider.of<DatabaseService>(context, listen: false)
           .changeTelephone(userId, telephone);

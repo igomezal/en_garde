@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:en_garde/models/DatabaseService.dart';
 import 'package:en_garde/models/EnGardeModel.dart';
-import 'package:en_garde/models/UserFromFireStore.dart';
 import 'package:en_garde/views/BasicStates.dart';
 import 'package:en_garde/views/HomePage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
