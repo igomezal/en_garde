@@ -94,11 +94,16 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: _authenticated != null
             ? StreamProvider<UserFromFireStore>(
-                create: (_) => Provider.of<DatabaseService>(context, listen: false).streamUser(_authenticated.uid),
+                create: (_) =>
+                    Provider.of<DatabaseService>(context, listen: false)
+                        .streamUser(_authenticated.uid),
                 child: Consumer<UserFromFireStore>(
                   builder: (context, user, child) {
                     return Column(
-                      children: [if(user?.telephone?.isEmpty ?? false) TelephoneAlert(), _pages[_selectedIndex]],
+                      children: [
+                        if (user?.telephone?.isEmpty ?? false) TelephoneAlert(),
+                        _pages[_selectedIndex]
+                      ],
                     );
                   },
                 ),
