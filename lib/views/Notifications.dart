@@ -65,7 +65,10 @@ class _Notifications extends State<StatefulWidget> {
                       : null,
                   trailing: Text(notification.timestamp),
                   title: Text(notification.title),
-                  subtitle: Text(notification.body),
+                  subtitle: Text(
+                    notification.body,
+                    textAlign: TextAlign.justify,
+                  ),
                 ),
                 background: Container(color: Colors.red),
               );
