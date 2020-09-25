@@ -10,7 +10,7 @@ class Notification {
       {this.read = false,
       this.title = '',
       this.body = '',
-      this.timestamp = '2020'});
+      this.timestamp = ''});
 }
 
 class Notifications extends StatefulWidget {
