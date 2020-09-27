@@ -30,20 +30,30 @@ class PushNotificationsManager {
   bool _initialized = false;
 
   Future<void> init(String uid, BuildContext context) async {
-    if (!_initialized) {
+    var platform = Theme.of(context).platform;
+    if (!_initialized && platform != TargetPlatform.iOS) {
       await _firebaseMessaging.requestNotificationPermissions();
       _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
           print("onMessage: $message");
-          NotificationsDatabase().addNotification(NotificationStored(title: message['data']['title'], body: message['data']['body'], timestamp: message['data']['timestamp']));
+          NotificationsDatabase().addNotification(NotificationStored(
+              title: message['data']['title'],
+              body: message['data']['body'],
+              timestamp: message['data']['timestamp']));
         },
         onLaunch: (Map<String, dynamic> message) async {
           print("onLaunch: $message");
-          NotificationsDatabase().addNotification(NotificationStored(title: message['data']['title'], body: message['data']['body'], timestamp: message['data']['timestamp']));
+          NotificationsDatabase().addNotification(NotificationStored(
+              title: message['data']['title'],
+              body: message['data']['body'],
+              timestamp: message['data']['timestamp']));
         },
         onResume: (Map<String, dynamic> message) async {
           print("onResume: $message");
-          NotificationsDatabase().addNotification(NotificationStored(title: message['data']['title'], body: message['data']['body'], timestamp: message['data']['timestamp']));
+          NotificationsDatabase().addNotification(NotificationStored(
+              title: message['data']['title'],
+              body: message['data']['body'],
+              timestamp: message['data']['timestamp']));
         },
         onBackgroundMessage: myBackgroundMessageHandler,
       );
@@ -55,6 +65,14 @@ class PushNotificationsManager {
       if (token != null) {
         DatabaseService().changeNotificationToken(uid, token);
       }
+    }
+  }
+
+  void finish(String uid) {
+    if (_initialized) {
+      _initialized = false;
+      DatabaseService().changeNotificationToken(uid, null);
+      _firebaseMessaging.deleteInstanceID();
     }
   }
 }

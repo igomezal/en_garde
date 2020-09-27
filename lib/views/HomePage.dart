@@ -45,9 +45,28 @@ class _HomePageState extends State<HomePage> {
         NotificationsDatabase().clearNotifications();
       },
     ),
+    PopupMenuButton<String>(
+      onSelected: (String selected) {
+        switch (selected) {
+          case 'Logout':
+            PushNotificationsManager().finish(FirebaseAuth.instance.currentUser.uid);
+            FirebaseAuth.instance.signOut();
+            break;
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return {'Logout'}.map((String choice) {
+          return PopupMenuItem<String>(
+            value: choice,
+            child: Text(choice),
+          );
+        }).toList();
+      },
+    )
   ];
 
   int _selectedIndex = 0;
+
   List<Widget> _actions = [];
   User _authenticated = FirebaseAuth.instance.currentUser;
 
@@ -64,14 +83,36 @@ class _HomePageState extends State<HomePage> {
       if (user == null) {
         print('No user authenticated');
         setState(() {
+          _actions = [];
           _authenticated = null;
         });
       } else {
         print('User authenticated');
         setState(() {
+          PushNotificationsManager().init(user.uid, this.context);
           _authenticated = user;
+          _actions = [
+            PopupMenuButton<String>(
+              onSelected: (String selected) {
+                switch (selected) {
+                  case 'Logout':
+                    PushNotificationsManager().finish(FirebaseAuth.instance.currentUser.uid);
+                    FirebaseAuth.instance.signOut();
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return {'Logout'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            )
+          ];
+          _selectedIndex = 0;
         });
-        PushNotificationsManager().init(user.uid, this.context);
       }
     });
     super.initState();
@@ -125,24 +166,25 @@ class _HomePageState extends State<HomePage> {
                         icon: Stack(
                           children: [
                             Icon(Icons.notifications),
-                            if(notifications.length > 0) Positioned(
-                              right: 0,
-                              child: Container(
-                                padding: EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(6),
+                            if (notifications.length > 0)
+                              Positioned(
+                                right: 0,
+                                child: Container(
+                                  padding: EdgeInsets.all(1),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  constraints: BoxConstraints(
+                                      minHeight: 12, minWidth: 12),
+                                  child: Text(
+                                    '${notifications.length}',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 8),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                constraints:
-                                    BoxConstraints(minHeight: 12, minWidth: 12),
-                                child: Text(
-                                  '${notifications.length}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 8),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
+                              )
                           ],
                         ),
                         title: Text(_sectionsApp[2]))
@@ -172,7 +214,26 @@ class _HomePageState extends State<HomePage> {
       if (index == _notificationIndex) {
         _actions = _notificationActions;
       } else {
-        _actions = [];
+        _actions = [
+          PopupMenuButton<String>(
+            onSelected: (String selected) {
+              switch (selected) {
+                case 'Logout':
+                  PushNotificationsManager().finish(FirebaseAuth.instance.currentUser.uid);
+                  FirebaseAuth.instance.signOut();
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return {'Logout'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ];
       }
     });
   }
