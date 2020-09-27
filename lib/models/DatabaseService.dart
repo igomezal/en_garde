@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'UserFromFireStore.dart';
+import 'package:en_garde/models/UserFromFireStore.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -34,6 +34,10 @@ class DatabaseService {
 
   void changeTelephone(String id, String telephone) {
     _db.doc('users/$id').update({'telephone': telephone});
+  }
+
+  void changeNotificationToken(String id, String token) {
+    _db.doc('users/$id').update({'notificationToken': token});
   }
 
   factory DatabaseService() {

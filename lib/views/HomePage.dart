@@ -1,5 +1,8 @@
 import 'dart:collection';
 import 'package:en_garde/models/DatabaseService.dart';
+import 'package:en_garde/models/NotificationStored.dart';
+import 'package:en_garde/models/NotificationsDatabase.dart';
+import 'package:en_garde/models/PushNotifications.dart';
 import 'package:en_garde/models/UserFromFireStore.dart';
 import 'package:en_garde/widgets/TelephoneAlert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,14 +39,11 @@ class _HomePageState extends State<HomePage> {
   final int _notificationIndex = 2;
   final List<Widget> _notificationActions = [
     IconButton(
-      icon: Icon(EnGarde.mail_read),
-      tooltip: 'Mark all notifications as read',
-      onPressed: () {},
-    ),
-    IconButton(
       icon: Icon(Icons.clear_all),
       tooltip: 'Clear all notifications',
-      onPressed: () {},
+      onPressed: () {
+        NotificationsDatabase().clearNotifications();
+      },
     ),
   ];
 
@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _authenticated = user;
         });
+        PushNotificationsManager().init(user.uid, this.context);
       }
     });
     super.initState();
@@ -111,28 +112,54 @@ class _HomePageState extends State<HomePage> {
             : AuthPage(),
       ),
       bottomNavigationBar: _authenticated != null
-          ? BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), title: Text(_sectionsApp[0])),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.account_circle),
-                    title: Text(_sectionsApp[1])),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications),
-                    title: Text(_sectionsApp[2]))
-              ],
-              currentIndex: _selectedIndex,
-              onTap: (int index) async {
-                if (_selectedIndex != index) {
-                  _onItemTapped(index);
-                  try {
-                    await analytics.setCurrentScreen(
-                        screenName: _sectionsApp[index]);
-                  } catch (e) {
-                    print(e);
-                  }
-                }
+          ? Consumer<List<NotificationStored>>(
+              builder: (context, notifications, child) {
+                return BottomNavigationBar(
+                  items: [
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.home), title: Text(_sectionsApp[0])),
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.account_circle),
+                        title: Text(_sectionsApp[1])),
+                    BottomNavigationBarItem(
+                        icon: Stack(
+                          children: [
+                            Icon(Icons.notifications),
+                            if(notifications.length > 0) Positioned(
+                              right: 0,
+                              child: Container(
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                constraints:
+                                    BoxConstraints(minHeight: 12, minWidth: 12),
+                                child: Text(
+                                  '${notifications.length}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 8),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        title: Text(_sectionsApp[2]))
+                  ],
+                  currentIndex: _selectedIndex,
+                  onTap: (int index) async {
+                    if (_selectedIndex != index) {
+                      _onItemTapped(index);
+                      try {
+                        await analytics.setCurrentScreen(
+                            screenName: _sectionsApp[index]);
+                      } catch (e) {
+                        print(e);
+                      }
+                    }
+                  },
+                );
               },
             )
           : null,

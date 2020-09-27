@@ -1,5 +1,7 @@
 import 'package:en_garde/models/DatabaseService.dart';
 import 'package:en_garde/models/EnGardeModel.dart';
+import 'package:en_garde/models/NotificationStored.dart';
+import 'package:en_garde/models/NotificationsDatabase.dart';
 import 'package:en_garde/views/BasicStates.dart';
 import 'package:en_garde/views/HomePage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -14,20 +16,32 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => EnGardeModel()),
-      StreamProvider<User>(create: (_) => FirebaseAuth.instance.authStateChanges()),
+      StreamProvider<User>(
+          create: (_) => FirebaseAuth.instance.authStateChanges()),
+      StreamProvider<List<NotificationStored>>(
+          create: (_) => NotificationsDatabase().notifications, initialData: []),
       Provider(create: (_) => DatabaseService()),
     ],
     child: MyApp(),
   ));
 }
 
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MyApp();
+}
 
-
-class MyApp extends StatelessWidget {
+class _MyApp extends State<MyApp> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   static FirebaseAnalytics analytics = FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
+
+  @override
+  void dispose() {
+    NotificationsDatabase().closeStream();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,77 +1,88 @@
+import 'package:en_garde/models/NotificationStored.dart';
+import 'package:en_garde/models/NotificationsDatabase.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class Notification {
-  bool read;
-  String title;
-  String body;
-  String timestamp;
-
-  Notification(
-      {this.read = false,
-      this.title = '',
-      this.body = '',
-      this.timestamp = ''});
-}
-
-class Notifications extends StatefulWidget {
-  @override
-  _Notifications createState() => _Notifications();
-}
-
-class _Notifications extends State<StatefulWidget> {
-  final List<Notification> _listItems = [
-    Notification(
-        title: 'New notification',
-        body:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas fringilla auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'),
-    Notification(
-        title: 'New notification',
-        body:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas fringilla auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'),
-    Notification(
-        title: 'New notification',
-        body:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas fringilla auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.'),
-    Notification(
-        title: 'New notification',
-        body:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas fringilla auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.')
-  ];
+class Notifications extends StatelessWidget {
+  final emptyInbox = 'assets/EmptyInbox.svg';
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: ListView.separated(
-            itemCount: _listItems.length,
-            separatorBuilder: (context, int index) => Divider(
-                  height: 0.0,
+    return Consumer<List<NotificationStored>>(
+        builder: (context, notifications, child) {
+      final List<NotificationStored> notificationsReversed =
+          notifications.reversed.toList();
+      return notifications.length > 0
+          ? Expanded(
+              child: ListView.separated(
+                  itemCount: notificationsReversed.length,
+                  separatorBuilder: (context, int index) => Divider(
+                        height: 0.0,
+                      ),
+                  itemBuilder: (BuildContext context, int index) {
+                    final notification = notificationsReversed[index];
+                    return Dismissible(
+                      key: Key(notification.hashCode.toString()),
+                      onDismissed: (direction) {
+                        NotificationsDatabase()
+                            .deleteNotification(notification.id);
+                      },
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(10),
+                        trailing: Text(timeago.format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(notification.timestamp)))),
+                        title: Text(notification.title),
+                        subtitle: Text(
+                          notification.body,
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                      background: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('Delete',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ))),
+                          color: Colors.red),
+                      secondaryBackground: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('Delete',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ))),
+                          color: Colors.red),
+                    );
+                  }))
+          : Expanded(
+              child: Align(
+                  child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  emptyInbox,
+                  allowDrawingOutsideViewBox: true,
+                  semanticsLabel: 'No notifications',
                 ),
-            itemBuilder: (BuildContext context, int index) {
-              final notification = _listItems[index];
-              return Dismissible(
-                key: Key(notification.hashCode.toString()),
-                onDismissed: (direction) {
-                  setState(() {
-                    _listItems.removeAt(index);
-                  });
-                },
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(10),
-                  dense: true,
-                  leading: !notification.read
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Icon(Icons.fiber_new)])
-                      : null,
-                  trailing: Text(notification.timestamp),
-                  title: Text(notification.title),
-                  subtitle: Text(
-                    notification.body,
-                    textAlign: TextAlign.justify,
-                  ),
+                SizedBox(
+                  height: 15,
                 ),
-                background: Container(color: Colors.red),
-              );
-            }));
+                ListTile(
+                    title: Center(
+                      child: Text('You don\'t have new notifications'),
+                    ),
+                    subtitle: Center(
+                      child: Text('Any new notification should appear here'),
+                    )),
+              ],
+              mainAxisSize: MainAxisSize.min,
+            )));
+    });
   }
 }

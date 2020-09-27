@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class AvailabilityWidget extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class AvailabilityWidget extends StatefulWidget {
 }
 
 class _AvailabilityWidget extends State<AvailabilityWidget> {
+  final HttpsCallable notifyAvailabilityChanged = CloudFunctions.instance
+      .getHttpsCallable(functionName: 'notifyAvailabilityChanged');
   List<String> todayOnDuty;
 
   @override
@@ -36,47 +39,47 @@ class _AvailabilityWidget extends State<AvailabilityWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Consumer<User>(builder: (context, user, child) {
-        var onDuty = todayOnDuty?.contains(user.uid) ?? false;
-        return Column(
-          children: [
-            const ListTile(
-              title: Text(
-                'Set availability',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+    return Card(child: Consumer<User>(builder: (context, user, child) {
+      var onDuty = todayOnDuty?.contains(user.uid) ?? false;
+      return Column(
+        children: [
+          const ListTile(
+            title: Text(
+              'Set availability',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            ListTile(
-              title: Text(onDuty ? 'You are on-duty' : 'You are not on-duty'),
-            ),
-            Consumer<UserFromFireStore>(
-                builder: (context, user, child) {
-                  return SwitchListTile(
-                    title: const Text('Availability'),
-                    value: user?.availability ?? false,
-                    onChanged:
-                    (user?.telephone?.isNotEmpty ?? false) && onDuty
-                        ? (bool availability) {
+          ),
+          ListTile(
+            title: Text(onDuty ? 'You are on-duty' : 'You are not on-duty'),
+          ),
+          Consumer<UserFromFireStore>(builder: (context, user, child) {
+            return SwitchListTile(
+              title: const Text('Availability'),
+              value: user?.availability ?? false,
+              onChanged: (user?.telephone?.isNotEmpty ?? false) && onDuty
+                  ? (bool availability) async {
                       Provider.of<DatabaseService>(context, listen: false)
                           .changeAvailability(user.id, availability);
+                      notifyAvailabilityChanged.call({
+                        'available': availability,
+                      });
                     }
-                        : null,
-                  );
-                }),
-            ExpansionTile(
-              title: const Text('Hint'),
-              children: [
-                Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                    child: const Text(
-                      'You can change your availability when you are on duty, this way when there is an incoming call whoever is available at that moment will have more priority (to receive the call) than someone who is not available.',
-                      textAlign: TextAlign.justify,
-                    ))
-              ],
-            )
-          ],
-        );
-      }));
+                  : null,
+            );
+          }),
+          ExpansionTile(
+            title: const Text('Hint'),
+            children: [
+              Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: const Text(
+                    'You can change your availability when you are on duty, this way when there is an incoming call whoever is available at that moment will have more priority (to receive the call) than someone who is not available.',
+                    textAlign: TextAlign.justify,
+                  ))
+            ],
+          )
+        ],
+      );
+    }));
   }
 }
