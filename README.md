@@ -18,6 +18,8 @@ Then using your terminal navigate to your project and run `flutter pub get` to i
 
 After installing all the SDK and installing flutter dependencies you will be able to run it in your device or even in the android emulator with the following commands.
 
+It is possible that you need to add the SHA1 or SHA-256 hash of your device (of the devices which generates the APK) to be able to login into the app, more info at https://firebase.google.com/docs/flutter/setup?platform=android and https://developers.google.com/android/guides/client-auth
+
 1. Open an Android emulator.
 2. Execute `flutter run`.
 3. If you have more than one emulator open it will ask you to select one if not then it should run in the only device connected.
